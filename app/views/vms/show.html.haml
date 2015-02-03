@@ -1,0 +1,48 @@
+.container-fluid#main-container
+  .row-fluid
+    .span2#sidebar
+      %ul.nav.nav-list
+        %li
+          = button_to 'Edit',edit_vm_path(@vm), method: :get, class: 'span12 btn btn-small btn-primary'
+        %li
+          = button_to 'Destroy',@vm, data: { confirm: "Are you sure to delete #{@vm.hostname} with chef info?" }, method: :delete, class: 'span12 btn btn-small btn-primary'
+        %li
+          = button_to 'Shutdown',shutdown_vm_path(@vm), data: { confirm: "Are you sure to shutdown #{@vm.hostname}?", disable_with: "Please wait..." }, method: :post, class: @vm.deletable ? 'span12 btn btn-small btn-warning' : 'span12 btn btn-small', disabled: !@vm.deletable
+        %li
+          = button_to 'Reboot',reboot_vm_path(@vm), data: { confirm: "Are you sure to reboot #{@vm.hostname}?", disable_with: "Please wait..." },  method: :post, class: @vm.deletable ? 'span12 btn btn-small btn-warning' : 'span12 btn btn-small', disabled: !@vm.deletable
+        %li
+          = button_to 'DeleteFromXcp',delete_from_xcp_vm_path(@vm), data: { confirm: "Are you sure to delete #{@vm.hostname} from XCP?", disable_with: "Please wait..." }, method: :delete, class: @vm.deletable ? 'span12 btn btn-small btn-danger' : 'span12 btn btn-small', disabled: !@vm.deletable
+        %li
+          = button_to 'DeleteDNSRecord',delete_dns_record_vm_path(@vm), data: { confirm: "Are you sure to delete DNS record of #{@vm.hostname}?", disable_with: "Please wait..." }, method: :delete, class: @vm.deletable ? 'span12 btn btn-small btn-danger' : 'span12 btn btn-small', disabled: !@vm.deletable
+
+    .span10#main-content
+      #table-content
+        %table.table.table-striped.table-bordered
+          %tbody
+            %tr
+              %th.span2 Hostname:
+              %th.span10= @vm.hostname
+            %tr
+              %th.span2 Ipaddr:
+              %th.span10= @vm.ipaddr
+            %tr
+              %th.span2 User:
+              %th.span10= @vm.user
+            %tr
+              %th.span2 Deletable:
+              %th.span10= @vm.deletable ? 'YES' : 'NO'
+            %tr
+              %th.span2 Skip Check:
+              %th.span10= @vm.skipcheck ? 'YES' : 'NO'
+            %tr
+              %th.span2 Halted Days:
+              %th.span10= @vm.halted_days
+            %tr
+              %th.span2 Login info:
+              %th.span10
+                %pre
+                  %code
+                    = @vm.login_info
+
+.text-center
+  = link_to 'Back', :back

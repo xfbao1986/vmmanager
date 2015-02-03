@@ -1,0 +1,9 @@
+= ""
+= "Hi #{@dns_record_request.operator},"
+= ""
+= "DNS Record Operation is completed."
+Result:
+= "#{@dns_record_request.operation} #{@dns_record_request.hostname} is #{@dns_record_request.state}."
+Detail:
+= @dns_record_request.result_detail
+= "You can confirm at http://vmmanager.test.domain/dns_record_requests/#{@dns_record_request.id}"

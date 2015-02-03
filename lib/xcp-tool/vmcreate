@@ -1,0 +1,114 @@
+#!/usr/bin/env ruby
+$:.unshift(File.dirname(__FILE__))
+require 'optparse'
+require "ip_address_registrar"
+require "xcp_vm"
+
+banner = "usage: #{File.basename($0)} --servername=<new vm name> [--template=<VM Template>] [--skip] [--user=<Unix User>]"
+banner += "\nplease create vmcreate.log first!!"
+options = {}
+option = nil
+ARGV.options do |opt|
+  opt.banner = banner
+  opt.on('-t','--template=VAL',"give a vm name as template")                            { |v| options[:template] = v }
+  opt.on('-s','--servername=VAL','give a new vm name')                                  { |v| options[:servername] = v }
+  opt.on('-u','--user=VAL',"give a user name(default is '#{ENV['USER']}')")             { |v| options[:user] = v }
+  opt.on('-k','--skip','skip ip register process')                                      { options[:skip] = true }
+  opt.on('-i','--timeout=VAL','set timeout seconds')                                    { |v| options[:timeout] = v }
+  opt.on('-h','--help','show help information')
+  option = opt
+  begin
+    opt.parse!
+  rescue => e
+    puts e.message
+    abort
+  end
+end
+
+if options[:servername] == nil || !File.exist?("vmcreate.log")
+  puts option
+  abort
+end
+
+setup_key = "#{File.dirname(__FILE__)}/setup_key"
+system "sudo chmod a+rw ./vmcreate.log"
+system "sudo chmod 600 #{setup_key}"
+template_name = if options[:template].nil? then 'Debian6_32_1st'
+                elsif options[:template].include? 'GIA' then 'Debian6_64_plain' # Pseudo template name
+                else options[:template]
+                end
+options[:user] ||= ENV['USER']
+session_pool ||= Xcp::Pool::DEFAULT_POOL
+background_option = ">> /var/tmp/vmcreate.log < /dev/null 2>&1 &"
+
+ip_register = IpAddressRegistrar.new(:user => options[:user])
+#register ip in DNS or search registered ip from DNS file
+if options[:skip]
+  registered_ip = `dig @*** +short #{options[:servername]}`.chomp
+else
+  abort unless ip_register.check_hostname options[:servername]
+  begin
+    registered_ip = ip_register.auto_ip_register options[:servername]
+  rescue Exception => e
+    puts e.message
+    abort
+  end
+end
+
+#search template_vm in session
+template_vm = Xcp::Pool.find_vm_by_name template_name, session_pool
+unless template_vm
+  puts "\n\t1: there is not template vm in default session pool!!!"
+  puts "\tprocess is aborting..\n"
+  abort
+end
+template_vm.pool.session.timeout = options[:timeout].to_i if options[:timeout]
+new_vm_name = options[:servername]+"_"+options[:user]
+created_vm = template_vm.copy new_vm_name
+unless created_vm
+  puts "\n\t1: template_vm must be shutdown!!!"
+  puts "\t2: name of vm must be unique in repository!!!"
+  puts "\t3: there is not enough space in repository!!!"
+  puts "\tprocess is aborting..reason is one of the above\n"
+  abort
+end
+created_vm.start
+
+#get guest ip of new vm
+progress = ["-","/","|","-","\\"]
+guest_ip = nil
+180.times do |i|
+  created_vm = Xcp::Pool.find_vm_by_name new_vm_name, session_pool
+  guest_ip = created_vm.ip_address
+  if guest_ip.nil?
+    $stderr.print "#{created_vm.name} VM creating... " + progress[i % progress.size] + "\r"
+    sleep 1
+    next
+  end
+  break
+end
+raise "Can not get guest ip. abort..." if guest_ip.nil?
+
+result =
+  if options[:template].include? "GIA2"
+    role = options[:template] =~ /php53/ ? 'devenv_GIA2_php53' : 'devenv_GIA2'
+    cmd = "ssh -l setup -i #{setup_key} -o StrictHostKeyChecking=no #{guest_ip} 'wget -q **/tools/init.sh && (sudo nohup bash ./init.sh #{options[:servername]} #{options[:user]} #{registered_ip} #{role} setup #{background_option})'"
+    puts cmd
+    system cmd
+  elsif template_vm.name.include? "_plain"
+    cmd = "ssh -l setup -i #{setup_key} -o StrictHostKeyChecking=no #{guest_ip} 'wget -q **/tools/init.sh && (sudo nohup bash ./init.sh #{options[:servername]} #{options[:user]} #{registered_ip} plain setup #{background_option})'"
+    puts cmd
+    system cmd
+  elsif template_vm.name.include? "Ubuntu"
+    cmd = "sudo -u admin ssh -o StrictHostKeyChecking=no #{guest_ip} 'sudo nohup /root/init_dev_jp.sh #{options[:servername]} #{registered_ip} #{background_option}'"
+    puts cmd
+    system cmd
+  elsif template_vm.name.include? "Debian" or template_vm.name.include? "Jenkins"
+    cmd = "sudo -u admin ssh -o StrictHostKeyChecking=no #{guest_ip} 'sudo nohup php /root/init_dev.php #{options[:servername]} #{registered_ip} #{options[:user]} #{background_option}'"
+    puts cmd
+    system cmd
+  end
+abort unless result
+File.open("vmcreate.log", "a") { |file|
+  file.puts "#{Time.now}\t#{options[:servername]}\t#{options[:user]}"
+}

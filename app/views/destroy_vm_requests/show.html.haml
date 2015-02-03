@@ -1,0 +1,35 @@
+%h1 Destroy Vm Result 
+%hr
+#table-content
+  %table.table.table-striped.table-bordered
+    %tbody
+      %tr
+        %th.span2 operator:
+        %th.span10= @destroy_vm_request.operator
+      %tr
+        %th.span2 Vm Host:
+        %th.span10= @destroy_vm_request.vm_host
+      %tr
+        %th.span2 Vm User:
+        %th.span10= @destroy_vm_request.vm_user
+      %tr
+        %th.span2 Result Detail:
+        %th.span10
+          %pre
+            %code= @destroy_vm_request.result_detail
+      %tr
+        %th.span2 Request State:
+        %th.span10
+          %span{class: request_state_label(@destroy_vm_request.state)}= @destroy_vm_request.state
+      %tr
+        %th.span2 Request Execute:
+        %th.span10
+          = button_to 'Execute', execute_destroy_vm_request_path(@destroy_vm_request), data: { confirm: "Are you sure to destroy xcp vm: #{@destroy_vm_request.vm_host}?"}, method: :post, class: @destroy_vm_request.state == 'created' ? 'btn btn-small btn-danger' : 'btn btn-small', disabled: @destroy_vm_request.state != 'created'
+      %tr
+        %th.span2 Request Start:
+        %th.span10= @destroy_vm_request.started_at
+      %tr
+        %th.span2 Request End:
+        %th.span10= @destroy_vm_request.completed_at
+.text-center
+  = link_to 'Back', :back

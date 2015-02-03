@@ -1,0 +1,19 @@
+%h1 Search Xcp Vm
+%hr
+= form_tag xcp_search_vms_path(format: :js), method: :get, class: "form-horizontal", id: "search_form", remote: true do
+  .control-group
+    = label_tag 'search_ by', 'Search By:', class: "control-label"
+    .controls
+      %label.radio.inline{for: 'search_by_hostname'}hostname
+      =radio_button_tag 'search_by', 'hostname', (params['search_by'] == 'hostname' || params['search_by'].nil?) ? true : false
+      %label.radio.inline{for: 'search_by_user'}user
+      =radio_button_tag 'search_by', 'user', (params['search_by'] == 'user') ? true : false
+  .control-group
+    = label_tag 'search', 'Search:', class: "control-label"
+    .controls
+      = text_field_tag 'search', nil, placeholder: 'hostname or user of VM', required: true
+  .form-actions
+    = submit_tag 'Submit', id: "search_submit", class: "btn btn-primary", data: { disable_with: "Please wait..." }
+    = submit_tag 'Reset', class: "btn", type: "reset"
+
+#search_result

@@ -1,0 +1,37 @@
+%table.table.table-striped.table-hover
+  %tr
+    %th
+      = sortable "host", "Host"
+    %th
+      = sortable "user", "User"
+    %th
+      = sortable "ssh_key", "Ssh key"
+    %th
+      = sortable "password", "Password"
+    %th
+      = sortable "setup_role", "Role"
+    %th
+      = sortable "state", "State"
+    %th
+      = sortable "dry_run", "Dry Run"
+    %th
+      = sortable "created_at", "Created at"
+    %th
+
+  - setups && setups.each do |setup|
+    %tr
+      %td= setup.host
+      %td= setup.user
+      %td= setup.ssh_key
+      %td= setup.password
+      %td= setup.setup_role
+      %td
+        %span{class: job_state_label(setup.state)}= setup.state
+      %td= setup.dry_run
+      %td= setup.created_at.strftime "%Y-%m-%d %H:%M:%S"
+      %td
+        = link_to setup do
+          .icon-book
+
+.text-center
+  = paginate setups

@@ -1,0 +1,30 @@
+%h1 Setup Vm Result
+%hr
+#table-content
+  %table.table.table-striped.table-bordered
+    %tbody
+      %tr
+        %th.span2 Host:
+        %th.span10= @setup.host
+      %tr
+        %th.span2 User:
+        %th.span10= @setup.user
+      %tr
+        %th.span2 Ssh key:
+        %th.span10= @setup.ssh_key
+      %tr
+        %th.span2 Password:
+        %th.span10= @setup.password
+      %tr
+        %th.span2 State:
+        %th.span10
+          %span{class: job_state_label(@setup.state)}= @setup.state
+      %tr
+        %th.span2 Job Start:
+        %th.span10= @setup.created_at
+      %tr
+        %th.span2 Job End:
+        %th.span10= @setup.completed_at
+
+.text-center
+  = link_to 'Back', :back

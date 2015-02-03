@@ -1,0 +1,39 @@
+= render "shared/vms_pools_navinfo"
+
+.tab-content
+  .tab-pane.active
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th
+            = sortable "name", "Pool Name"
+          %th
+            = sortable "num_of_vms", "Amount of Vms"
+          %th
+            = sortable "storage_total", "Total Storage Space"
+          %th
+            = sortable "storage_used", "Used Storage Space"
+          %th
+            Available Storage Space
+          %th
+            Percentage of Storage
+      %tbody
+        - @pools.each do |pool|
+          %tr
+            %td
+              = link_to pool.name, pool
+            %td
+              = pool.num_of_vms
+            %td
+              = pool.storage_total
+              GB
+            %td
+              = pool.storage_used
+              GB
+            %td
+              = pool.storage_available
+              GB
+            %td
+              %progress{:max => "100", :value => pool.storage_rate}
+              %span.small=pool.storage_rate
+              = "%"

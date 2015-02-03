@@ -1,0 +1,20 @@
+%tr
+  %td
+    = host.name
+  %td
+    = host.ipaddress
+  %td
+    = host.num_of_vms
+  %td
+    = host.storage_total
+    GB
+  %td
+    = host.storage_used
+    GB
+  %td
+    = host.storage_available
+    GB
+  %td
+    %progress{:max => "100", :value => host.storage_rate}
+    %span.small=host.storage_rate
+    = "%"

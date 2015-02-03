@@ -1,0 +1,31 @@
+%h1 Shutdown Vm Result 
+%hr
+#table-content
+  %table.table.table-striped.table-bordered
+    %tbody
+      %tr
+        %th.span2 operator:
+        %th.span10= @shutdown_request.operator
+      %tr
+        %th.span2 Vm Host:
+        %th.span10= @shutdown_request.vm_host
+      %tr
+        %th.span2 Vm User:
+        %th.span10= @shutdown_request.vm_user
+      %tr
+        %th.span2 Request State:
+        %th.span10
+          %span{class: request_state_label(@shutdown_request.state)}= @shutdown_request.state
+      %tr
+        %th.span2 Request Start:
+        %th.span10= @shutdown_request.started_at
+      %tr
+        %th.span2 Request End:
+        %th.span10= @shutdown_request.completed_at
+      %tr
+        %th.span2 Result details:
+        %th.span10
+          %pre
+            %code= @shutdown_request.result_details
+.text-center
+  = link_to 'Back', :back

@@ -1,0 +1,23 @@
+= render "shared/vms_pools_navinfo"
+
+.tab-content
+  .tab-pane.active
+
+.tabbable
+  %ul.nav.nav-pills.justified
+    %li{class: "#{'active' if params['filter'] == 'commpleted'}"}
+      =link_to 'Commpleted', shutdown_requests_path(filter: 'commpleted')
+    %li{class: "#{'active' if params['filter'] == 'waiting'}"} 
+      =link_to 'Waiting', shutdown_requests_path(filter: 'waiting')
+    %li{class: "#{'active' if params['filter'] == 'all' || params['filter'].nil?}"} 
+      =link_to 'All', shutdown_requests_path(filter: 'all' || params['filter'].nil?)
+  .tab-content
+    .tab-pane{ class: "#{'active' if params['filter'] == 'commpleted'}" }
+      =render partial: "requests_table", locals: { shutdown_requests: @shutdown_requests[:completed] }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'waiting'}" }
+      =render partial: "requests_table", locals: { shutdown_requests: @shutdown_requests[:waiting] }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'all' || params['filter'].nil?}" }
+      =render partial: "requests_table", locals: { shutdown_requests: @shutdown_requests[:all] }
+%br
+
+= link_to 'Request Shutdown Xcp Vm', new_shutdown_request_path

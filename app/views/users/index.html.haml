@@ -1,0 +1,40 @@
+%h1 Listing users
+%hr
+
+%form.pull-right
+  = form_tag users_path, method: :get, class: "form-search" do
+    = hidden_field_tag :direction, params[:direction]
+    = hidden_field_tag :sort, params[:sort]
+    = text_field_tag :search, params[:search], placeholder: "search...", class: "input-medium search-query"
+    = submit_tag "Search", name: nil, class: "btn btn-inverse"
+
+%table.table.table-striped.table-hover
+  %tr
+    %th
+      = sortable "name", "Name"
+    %th
+      = sortable "email", "Email"
+    %th
+      = sortable "admin", "Admin"
+    %th
+    %th
+    %th
+
+  - @users.each do |user|
+    %tr
+      %td= user.name
+      %td= user.email
+      %td= user.admin
+      %td
+        = link_to user do
+          .icon-book
+      %td
+        = link_to edit_user_path(user) do
+          .icon-edit
+      %td
+        = link_to user, method: :delete, data: { confirm: "Are you sure to delete user: #{user.name}?" } do
+          .icon-remove
+.text-center
+  = paginate @users
+%br
+= link_to 'New User', new_user_path

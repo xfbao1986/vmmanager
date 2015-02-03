@@ -1,0 +1,31 @@
+%h1 Dns Record Result 
+%hr
+#table-content
+  %table.table.table-striped.table-bordered
+    %tbody
+      %tr
+        %th.span2 Operator:
+        %th.span10= @request.operator
+      %tr
+        %th.span2 Operation:
+        %th.span10= @request.operation
+      %tr
+        %th.span2 Hostname:
+        %th.span10= @request.hostname
+      %tr
+        %th.span2 Result Detail:
+        %th.span10
+          %pre
+            %code= @request.result_detail
+      %tr
+        %th.span2 Request State:
+        %th.span10
+          %span{class: request_state_label(@request.state)}= @request.state
+      %tr
+        %th.span2 Request Start:
+        %th.span10= @request.started_at
+      %tr
+        %th.span2 Request End:
+        %th.span10= @request.completed_at
+.text-center
+  = link_to 'Back', :back

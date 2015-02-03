@@ -1,0 +1,24 @@
+= form_for @shutdown_request, html: {class: "form-horizontal"} do |f|
+  - if @shutdown_request.errors.any?
+    #error_explanation
+      %strong.text-error= "#{pluralize(@shutdown_request.errors.count, "error")} prohibited this Shutdown Vm Request from being saved:"
+      %ul
+        - @shutdown_request.errors.full_messages.each do |msg|
+          %li.text-error=msg
+
+  .control-group
+    = f.label :operator, 'operator:',  class: "control-label"
+    .controls
+      = f.text_field :operator, placeholder: "operator user name", value: current_user.name, required: true
+  .control-group
+    = f.label :vm_host, 'VM Host:', class: "control-label"
+    .controls
+      = f.text_field :vm_host, placeholder: "vm to destroy", required: true
+  .control-group
+    = f.label :vm_user, 'VM User:', class: "control-label"
+    .controls
+      = f.text_field :vm_user, placeholder: "user of vm", required: true
+  .form-actions
+    = f.submit 'Submit', class: "btn btn-primary", data: { disable_with: 'Please wait...' }
+    = f.submit 'Reset', class: "btn", type: "reset"
+

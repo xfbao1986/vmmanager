@@ -1,0 +1,36 @@
+%table.table.table-striped.table-hover
+  %tr
+    %th 
+      = sortable 'operator', 'operator'
+    %th
+      = sortable 'vm_host', 'Vm host'
+    %th
+      = sortable 'vm_user', 'Vm user'
+    %th 
+      = sortable 'state', 'Request state'
+    %th 
+      = sortable 'started_at', 'Started at'
+    %th 
+      = sortable 'completed_at', 'Completed at'
+    %th
+    %th
+    %th
+
+  - destroy_vm_requests && destroy_vm_requests.each do |destroy_vm_request|
+    %tr
+      %td= destroy_vm_request.operator
+      %td= destroy_vm_request.vm_host
+      %td= destroy_vm_request.vm_user
+      %td
+        %span{class: request_state_label(destroy_vm_request.state)}= destroy_vm_request.state
+      %td= destroy_vm_request.started_at ? destroy_vm_request.started_at.strftime("%Y-%m-%d %H:%M:%S") : nil
+      %td= destroy_vm_request.completed_at ? destroy_vm_request.completed_at.strftime("%Y-%m-%d %H:%M:%S") : nil
+      %td
+        = link_to destroy_vm_request do
+          .icon-book
+      %td
+        = link_to edit_destroy_vm_request_path(destroy_vm_request) do
+          .icon-edit
+      %td
+        = link_to destroy_vm_request, method: :delete, data: { confirm: 'Are you sure to delete this request?' } do
+          .icon-remove

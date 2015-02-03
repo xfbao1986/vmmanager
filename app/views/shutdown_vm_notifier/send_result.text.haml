@@ -1,0 +1,10 @@
+= ""
+- if @shutdown_request.operator != 'vmmanager'
+  = "Hi #{@shutdown_request.operator},"
+= ""
+= "Shutting down VM is completed."
+Result:
+= "Shutting down #{@shutdown_request.vm_host}_#{@shutdown_request.vm_user} is #{@shutdown_request.state}."
+Detail:
+= @shutdown_request.result_details
+= "You can confirm at http://vmmanager.test.domain/shutdown_requests/#{@shutdown_request.id}"

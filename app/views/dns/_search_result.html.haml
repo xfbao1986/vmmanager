@@ -1,0 +1,30 @@
+- if @record.present?
+  %table.table-responsive
+    - if @record[:a_record]
+      %table.table.table-striped.table-hover
+        %thead
+          %tr.active
+            %th A record
+        %tbody
+          %tr
+            %td= @record[:a_record].join("\n")
+    - if @record[:ptr_record]
+      %table.table.table-striped.table-hover
+        %thead
+          %tr
+            %th PTR record
+        %tbody
+          %tr
+            %td= @record[:ptr_record].join("\n")
+    -if @record[:cname_record]
+      %table.table.table-striped.table-hover
+        %thead
+          %tr
+            %th CNAME record
+        %tbody
+          - @record[:cname_record].each do |record|
+            %tr
+              %td= record
+- else
+  .alert.alert-info
+    = "No result found!"

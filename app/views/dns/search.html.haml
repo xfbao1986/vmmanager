@@ -1,0 +1,17 @@
+%h1 Search DNS Record
+%hr
+
+= form_tag record_search_dns_path(format: :js), method: :get, class: "form-horizontal", id: "search_dns_form", remote: true do
+  .control-group
+    = label_tag 'hostname', 'Search Hostname:', class: "control-label"
+    .controls
+      = text_field_tag 'hostname', nil, placeholder: 'search DNS record', required: true
+  .control-group
+    = label_tag 'cname', 'Include CNAME:', class: "control-label"
+    .controls
+      = check_box_tag 'cname', 'cname'
+    .form-actions
+      = submit_tag 'Submit', class: "btn btn-primary", id: "dns_submit", data: { disable_with: "Please wait..." }
+      = submit_tag 'Reset', class: "btn", type: "reset"
+
+#search_result

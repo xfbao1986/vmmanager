@@ -1,0 +1,33 @@
+%table.table.table-striped.table-hover
+  %tr
+    %th 
+      = sortable 'operator', 'operator'
+    %th
+      = sortable 'vm_host', 'Vm host'
+    %th
+      = sortable 'vm_user', 'Vm user'
+    %th 
+      = sortable 'state', 'Request state'
+    %th 
+      = sortable 'started_at', 'Started at'
+    %th 
+      = sortable 'completed_at', 'Completed at'
+    %th
+    %th
+    %th
+
+  - shutdown_requests && shutdown_requests.each do |shutdown_request|
+    %tr
+      %td= shutdown_request.operator
+      %td= shutdown_request.vm_host
+      %td= shutdown_request.vm_user
+      %td
+        %span{class: request_state_label(shutdown_request.state)}= shutdown_request.state
+      %td= shutdown_request.started_at ? shutdown_request.started_at.strftime("%Y-%m-%d %H:%M:%S") : nil
+      %td= shutdown_request.completed_at ? shutdown_request.completed_at.strftime("%Y-%m-%d %H:%M:%S") : nil
+      %td
+        = link_to shutdown_request do
+          .icon-book
+      %td
+        = link_to shutdown_request, method: :delete, data: { confirm: 'Are you sure to delete this request?' } do
+          .icon-remove

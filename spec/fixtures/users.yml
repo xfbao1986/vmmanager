@@ -1,0 +1,4 @@
+user1:
+  name  : "Bob"
+  email : "bob@**"
+  admin : true

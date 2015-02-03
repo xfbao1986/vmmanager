@@ -1,0 +1,23 @@
+= form_for @request, html: {class: "form-horizontal"} do |f|
+  - if @request.errors.any?
+    #error_explanation
+      %strong.text-error= "#{pluralize(@request.errors.count, "error")} prohibited this Dns Record Request from being saved:"
+      %ul
+        - @request.errors.full_messages.each do |msg|
+          %li.text-error=msg
+
+  .control-group
+    = f.label :operator, 'Operator:',  class: "control-label"
+    .controls
+      = f.text_field :operator, placeholder: "operator user name", value: current_user.email.split("@").first, required: true
+  .control-group
+    = f.label :operation, 'Operation:',  class: "control-label"
+    .controls
+      = f.select :operation, [['Add','add'], ['Delete','delete']]
+  .control-group
+    = f.label :hostname, 'Hostname:', class: "control-label"
+    .controls
+      = f.text_field :hostname, placeholder: "DNS record to operate", required: true
+  .form-actions
+    = f.submit 'Submit', class: "btn btn-primary", disable_with: "Please wait..."
+    = f.submit 'Reset', class: "btn", type: "reset"

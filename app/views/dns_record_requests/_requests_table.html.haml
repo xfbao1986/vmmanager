@@ -1,0 +1,33 @@
+%table.table.table-striped.table-hover
+  %tr
+    %th 
+      = sortable 'operator', 'Operator'
+    %th
+      = sortable 'operation', 'Operation'
+    %th
+      = sortable 'hostname', 'Hostname'
+    %th 
+      = sortable 'state', 'Request state'
+    %th 
+      = sortable 'started_at', 'Started at'
+    %th 
+      = sortable 'completed_at', 'Completed at'
+    %th
+    %th
+    %th
+
+  - dns_record_requests && dns_record_requests.each do |dns_record_request|
+    %tr
+      %td= dns_record_request.operator
+      %td= dns_record_request.operation
+      %td= dns_record_request.hostname
+      %td
+        %span{class: request_state_label(dns_record_request.state)}= dns_record_request.state
+      %td= dns_record_request.started_at ? dns_record_request.started_at.strftime("%Y-%m-%d %H:%M:%S") : nil
+      %td= dns_record_request.completed_at ? dns_record_request.completed_at.strftime("%Y-%m-%d %H:%M:%S") : nil
+      %td
+        = link_to dns_record_request do
+          .icon-book
+      %td
+        = link_to dns_record_request, method: :delete, data: { confirm: 'Are you sure to delete this request?' } do
+          .icon-remove

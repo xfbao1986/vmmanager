@@ -1,0 +1,30 @@
+development:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: vmmanager_development
+  pool: 15
+  username: root
+  host: 127.0.0.1
+  socket: /var/run/mysqld/mysqld.sock
+
+test:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: vmmanager_test
+  pool: 15
+  username: root
+  host: 127.0.0.1
+  socket: /var/run/mysqld/mysqld.sock
+
+production:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: vmmanager_production
+  pool: 25
+  username: ***
+  password: ***
+  host: ***
+  socket: /var/run/mysqld/mysqld.sock

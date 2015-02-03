@@ -1,0 +1,31 @@
+%h1 Setup Jobs
+%hr
+
+%form.pull-right
+  = form_tag setups_path, method: :get, class: "form-search" do
+    = text_field_tag :search, params[:search], placeholder: "search...", class: "input-medium search-query"
+    = submit_tag "Search", name: nil, class: "btn btn-inverse"
+
+.tabbable
+  %ul.nav.nav-pills.justified
+    %li{class: "#{'active' if params['filter'] == 'commpleted'}"}
+      =link_to 'Commpleted', setups_path(filter: 'commpleted')
+    %li{class: "#{'active' if params['filter'] == 'failed'}"}
+      =link_to 'Failed', setups_path(filter: 'failed')
+    %li{class: "#{'active' if params['filter'] == 'created'}"}
+      =link_to 'Created', setups_path(filter: 'created')
+    %li{class: "#{'active' if params['filter'] == 'all' || params['filter'].nil?}"}
+      =link_to 'All', setups_path(filter: 'all' || params['filter'].nil?)
+
+  .tab-content
+    .tab-pane{ class: "#{'active' if params['filter'] == 'commpleted'}" }
+      =render partial: "jobs_table", locals: { setups: @setups_completed }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'failed'}" }
+      =render partial: "jobs_table", locals: { setups: @setups_failed }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'created'}" }
+      =render partial: "jobs_table", locals: { setups: @setups_created }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'all' || params['filter'].nil?}" }
+      =render partial: "jobs_table", locals: { setups: @setups_all }
+%br
+
+= link_to 'New Setup', new_setup_path

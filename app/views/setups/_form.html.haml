@@ -1,0 +1,27 @@
+= form_for @setup, html: {class: "form-horizontal"} do |f|
+  - if @setup.errors.any?
+    #error_explanation
+      %strong.text-error= "#{pluralize(@setup.errors.count, "error")} prohibited this setup from being saved:"
+      %ul
+        - @setup.errors.full_messages.each do |msg|
+          %li.text-error= msg
+
+  .control-group
+    = f.label :host, 'Host:', class: "control-label"
+    .controls
+      = f.text_field :host, placeholder: "hostname to setup", required: true
+  .control-group
+    = f.label :user, 'User:', class: "control-label"
+    .controls
+      = f.select :user, ['admin', 'setup', 'dummy'], {}, {}
+  .control-group
+    = f.label :setup_role, 'Role:', class: "control-label"
+    .controls
+      = f.text_field :setup_role, placeholder: "chef role of vm", required: true
+  .control-group
+    = f.label :dry_run, 'Dry run:', class: "control-label"
+    .controls
+      = f.check_box :dry_run
+  .form-actions
+    = f.submit 'Save', class: "btn btn-primary", data: { confirm: 'Are you sure to setup this VM?' }
+    = f.submit 'Reset', class: "btn", type: "reset"

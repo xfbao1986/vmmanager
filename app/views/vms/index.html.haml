@@ -1,0 +1,66 @@
+= render "shared/vms_pools_navinfo"
+
+= button_to 'shutdown_deletable', shutdown_deletable_vms_path, data: { confirm: "Are you sure to shutdown all vms which are deletable?" }, method: :post, class: 'btn btn-small btn-primary'
+
+.tab-content
+  .tab-pane.active
+    %table.table
+      %tbody
+        %tr
+          %th.text-success
+            all deleted:
+            = Vm.only_deleted.count
+          %th.text-success
+            = Time.now.strftime("%Y-%m")
+            month deleted:
+            = Vm.only_deleted.deleted_in_this_month.count
+          %th
+            %form.pull-right
+              = form_tag vms_path, method: :get, class: "form-search" do
+                = hidden_field_tag :direction, params[:direction]
+                = hidden_field_tag :sort, params[:sort]
+                = text_field_tag :search, params[:search], placeholder: "search...", class: "input-medium search-query"
+                = submit_tag "Search", name: nil, class: "btn btn-inverse"
+
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th
+            = sortable "hostname","Hostname"
+          %th
+            = sortable "ipaddr","Ipaddr"
+          %th
+            = sortable "active_state","Active State"
+          %th
+            = sortable "user","User"
+          %th
+            = sortable "deletable","Deletable"
+          %th
+            = sortable "skipcheck","Skip Check"
+          %th
+            = sortable "last_shutdown_at","Halted Days"
+          %th
+          %th
+      %tbody
+        - @vms.each do |vm|
+          %tr
+            %td
+              = link_to vm.hostname, vm
+            %td
+              = vm.ipaddr
+            %td
+              %span{class: "#{state_label vm}"}= vm.active_state_str
+            %td
+              = vm.user
+            %td
+              %span{class: "#{deletable_label vm}"}= vm.deletable ? 'YES' : 'NO'
+            %td
+              %span{class: "#{skip_label vm}"}= vm.skipcheck ? 'YES' : 'NO'
+            %td
+              %span{class: "#{halted_days_label vm}"}= vm.halted_days
+
+    .text-center
+      = paginate @vms
+
+    %br
+      = link_to 'New Vm', new_vm_path

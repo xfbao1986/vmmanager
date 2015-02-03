@@ -1,0 +1,32 @@
+= render "shared/vms_pools_navinfo"
+
+.tab-content
+  .tab-pane.active
+
+.tabbable
+  %ul.nav.nav-pills.justified
+    %li{class: "#{'active' if params['filter'] == 'completed'}"}
+      =link_to 'Completed', dns_record_requests_path(filter: 'completed')
+    %li{class: "#{'active' if params['filter'] == 'waiting'}"} 
+      =link_to 'Waiting', dns_record_requests_path(filter: 'waiting')
+    %li{class: "#{'active' if params['filter'] == 'add'}"} 
+      =link_to 'Added', dns_record_requests_path(filter: 'add')
+    %li{class: "#{'active' if params['filter'] == 'delete'}"} 
+      =link_to 'Deleted', dns_record_requests_path(filter: 'delete')
+    %li{class: "#{'active' if params['filter'] == 'all' || params['filter'].nil?}"} 
+      =link_to 'All', dns_record_requests_path(filter: 'all' || params['filter'].nil?)
+  .tab-content
+    .tab-pane{ class: "#{'active' if params['filter'] == 'completed'}" }
+      =render partial: "requests_table", locals: { dns_record_requests: @requests[:completed] }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'waiting'}" }
+      =render partial: "requests_table", locals: { dns_record_requests: @requests[:waiting] }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'add'}" }
+      =render partial: "requests_table", locals: { dns_record_requests: @requests[:add] }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'delete'}" }
+      =render partial: "requests_table", locals: { dns_record_requests: @requests[:delete] }
+    .tab-pane{ class: "#{'active' if params['filter'] == 'all' || params['filter'].nil?}" }
+      =render partial: "requests_table", locals: { dns_record_requests: @requests[:all] }
+%br
+
+%ul
+    = link_to 'New DNS Record Request', new_dns_record_request_path

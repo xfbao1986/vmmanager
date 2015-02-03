@@ -1,0 +1,18 @@
+%h2 Hosts List
+%hr
+
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th Host Name
+      %th Ipaddress
+      %th Amount of Vms
+      %th Total Storage Space
+      %th Used Storage Space
+      %th Available Storage Space
+      %th Percentage of Storage
+  %tbody
+    =render @pool.hosts
+
+.text-center
+  = link_to 'Back', pools_path

@@ -1,0 +1,19 @@
+- if @xcp_vms.present?
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th Hostname
+        %th User
+        %th Ipaddr
+        %th Power state
+    %tbody
+      - @xcp_vms.each do |xcp_vm|
+        %tr
+          %td= xcp_vm.name.split('_').first
+          %td= xcp_vm.name.split('_').last
+          %td= xcp_vm.ip_address
+          %td
+            %span{class: "#{power_state_label xcp_vm.power_state}"}= xcp_vm.power_state
+- else
+  .alert.alert-info
+    = "No result found!"
